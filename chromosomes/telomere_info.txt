@@ -1,0 +1,29 @@
+Last position of reference genome chromosomes belonging to telomere (N)
+chr1: 3037418
+chr10: 3037418
+chr11: 3037418
+chr12: 3037418
+chr13: 3037418
+chr14: 3037418
+chr15: 3037418
+chr16: 3037418
+chr17: 3037418
+chr18: 3037418
+chr19: 3037418
+chr2: 3037418
+chr20: 3037418
+chr21: No telomere
+chr22: 3037418
+chr23: 3037418
+chr24: 3037418
+chr25: 3037418
+chr26: 3037418
+chr27: 3037418
+chr3: No telomere
+chr4: 3037418
+chr5: 3037418
+chr6: 3037418
+chr7: No telomere
+chr8: 3037418
+chr9: 3037418
+chrX: 3037418
