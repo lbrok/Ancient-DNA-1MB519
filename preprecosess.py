@@ -12,11 +12,11 @@ from tabulate import tabulate
 def preprocess(inputfile, telo_start, telo_end, chr, std, mean):
     result = []
     data = pd.read_csv(inputfile, sep='\t', comment='t', header=None,
-                       usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], skiprows=[i for i in range(telo_start, telo_end)], chunksize=100000)
+                       usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], skiprows=[i for i in range(telo_start, telo_end)],
+                       chunksize=100000)
     for chunk in data:
-
         chunk.columns = ['chr', 'Pos', 'Asian-1', 'Asian-2', 'African-1', 'African-2', 'Woolly-mammoth-1',
-                        'Woolly-mammoth-2', 'Woolly-mammoth-3', 'Woolly-mammoth-4', 'Woolly-mammoth-5']
+                         'Woolly-mammoth-2', 'Woolly-mammoth-3', 'Woolly-mammoth-4', 'Woolly-mammoth-5']
         df = pd.DataFrame(chunk)
 
         df['avr_pooled_asian'] = (df['Asian-1'] + df['Asian-2']) / 2
@@ -30,16 +30,15 @@ def preprocess(inputfile, telo_start, telo_end, chr, std, mean):
         df.drop(['Woolly-mammoth-1', 'Woolly-mammoth-2', 'Woolly-mammoth-3', 'Woolly-mammoth-4', 'Woolly-mammoth-5'],
                 axis='columns', inplace=True)
 
+        # std = df[['avr_pooled_mammoth']].std()
 
-        #std = df[['avr_pooled_mammoth']].std()
-
-        outliers = 2 * std
+        outliers = mean + (2 * std)
         # print(outliers)
 
         df2 = df[df['avr_pooled_mammoth'] < outliers]
-        #print(df2)
+        # print(df2)
         result.append(df2)
-        #print(result)
+        # print(result)
 
     result = pd.concat(result)
 
@@ -47,9 +46,6 @@ def preprocess(inputfile, telo_start, telo_end, chr, std, mean):
 
     with open(f"{chr}_preprocessed.bed", "w") as outfile:
         outfile.write(content)
-
-
-
 
 
 if __name__ == '__main__':
