@@ -1,6 +1,6 @@
 def find_telomere():
     # Reading fasta file to string
-    fasta_file = open(r"C:/Users/46722/Documents/Tillämpad_bioinformatik/Ancient-DNA-1MB519/chr13.fa", "r")
+    fasta_file = open(r"C:/Users/46722/Documents/Tillämpad_bioinformatik/Ancient-DNA-1MB519/chrX.fa", "r")
     seq = fasta_file.read()
     fasta_file.close()
 
@@ -13,7 +13,6 @@ def find_telomere():
     C_pos = seq.find('C')
     T_pos = seq.find('T')
     first_pos = min(A_pos, G_pos, C_pos, T_pos)
-
     return first_pos
 
 if __name__ == '__main__':
