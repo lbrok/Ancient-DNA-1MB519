@@ -1,10 +1,4 @@
-import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
-import math
-import seaborn as sns
-from scipy.stats import norm
-import statistics
 import csv
 from tabulate import tabulate
 
