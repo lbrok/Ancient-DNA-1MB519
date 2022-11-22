@@ -60,7 +60,7 @@ def plot_gc():
         if gc_dict[i] != []:
             ratio_counts.append(sum(gc_dict[i]) / len(gc_dict[i]))
         else:
-            ratio_counts.append(0)
+            ratio_counts.append(None)
 
     # Calculating average depth in each G-window
     ratio_counts_g = []
@@ -68,7 +68,7 @@ def plot_gc():
         if g_dict[i] != []:
             ratio_counts_g.append(sum(g_dict[i]) / len(g_dict[i]))
         else:
-            ratio_counts_g.append(0)
+            ratio_counts_g.append(None)
 
     # Calculating average depth in each C-window
     ratio_counts_c = []
@@ -76,7 +76,7 @@ def plot_gc():
         if c_dict[i] != []:
             ratio_counts_c.append(sum(c_dict[i]) / len(c_dict[i]))
         else:
-            ratio_counts_c.append(0)
+            ratio_counts_c.append(None)
 
     # Plotting results
     plt.subplot(3, 1, 1)
