@@ -22,7 +22,7 @@ def incrementalStatistics(filePath, names, telomeres):
         for chunk in pd.read_csv(filePath+names[i]+'.depth', sep='\t', comment='t', header=None, usecols=[2,3,4,5], skiprows=telomeres[i], chunksize=10000000):
             chunk = chunk.mean(axis=1) #Calculates the mean value of each input row
             for index, mammothMean in chunk.items(): #Iterates through each row
-                #if mammothMean < meanValue + 2*stdValue: #Remove loop if no outliers should be removed
+                #if mammothMean < meanValue + 2*stdValue: #Add / remove if statement if outliers should be removed or not
                 n += 1 #Adds one nucleotide in the counter
                 mOld = m #Stores the recent mean value
                 m = m + ((mammothMean-m)/n) #Calculates an incremental mean value
