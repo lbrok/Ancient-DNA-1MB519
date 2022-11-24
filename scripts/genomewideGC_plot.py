@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from Bio.SeqIO.FastaIO import SimpleFastaParser
+import os
 
 
 def plot_gc():
-    
+    outfile=str(input('Output file name: '))
     # Calculating depth and GC content in specified regions using these dictionaries
     # Dictionaries have keys from 0 to 100
     gc_dict = {i: [0,0] for i in range(101)}
@@ -12,13 +13,14 @@ def plot_gc():
     c_dict = {i: [0,0] for i in range(101)}
 
     # Defining variables
-    window_size = 1000  # Set window size for sliding window analysis
+    window_size = 100  # Set window size for sliding window analysis
     mammoth_average = 13.34943063462263     # Pooled mammoth genome average
     elephant_average = 33.001500559085684   # Pooled elephant genome average
     chunk_size = 1000000 #Size of data batches being read, in rows at a time
     telomeres = [3037418,3037418,0,3037418,3037418,3037418,0,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,0,3037418,3037418,3037418,3037418,3037418,3037418,3037418]
-    names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25', 'chr26', 'chr27', 'chrX']
-
+    #names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25', 'chr26', 'chr27', 'chrX']
+    names = ['chr24']
+    
     with open("D:/Data/LoxAfr4_DQ188829.fa") as handle:
         for values in SimpleFastaParser(handle): #Loads the Fasta header and the corresponding sequence in a list [header,sequence]
             if values[0] in names: #If the fasta header is present in the names list it should be included in the calculations
@@ -71,9 +73,13 @@ def plot_gc():
                 print(f'Chromosome {names[chr_nr]} DONE')
         values = 0
 
+    print('Writing and plotting')
+    os.chdir("./GC_data")
+    f = open(outfile+".txt", "a")
     # Calculating average depth in each GC-window
     ratio_counts = []
     for i in gc_dict:
+        f.write(str(float(gc_dict[i][0]))+'\t'+str(int(gc_dict[i][1]))+'\n')
         if gc_dict[i] != [0,0]:
             ratio_counts.append(gc_dict[i][0])
         else:
@@ -94,22 +100,23 @@ def plot_gc():
             ratio_counts_c.append(c_dict[i][0])
         else:
             ratio_counts_c.append(None)
+    f.close()
 
     # Plotting results
-    plt.subplot(3, 1, 1)
+    #plt.subplot(3, 1, 2)
     plt.scatter([i for i in range(101)], ratio_counts, s=5)
     plt.axhline(0, color='r', linewidth=0.5)
     plt.xlabel('GC-content [%]')
-    plt.title('Window size 1000 bp')
-    plt.subplot(3, 1, 2)
-    plt.scatter([i for i in range(101)], ratio_counts_g, s=5)
-    plt.axhline(0, color='r', linewidth=0.5)
-    plt.xlabel('G-content [%]')
-    plt.ylabel('Mammoth depth ratio - Elephant depth ratio / Mammoth depth ratio + Elephant depth ratio')
-    plt.subplot(3, 1, 3)
-    plt.scatter([i for i in range(101)], ratio_counts_c, s=5)
-    plt.axhline(0, color='r', linewidth=0.5)
-    plt.xlabel('C-content [%]')
+    plt.title('Window size 100 bp')
+    #plt.subplot(3, 1, 2)
+    #plt.scatter([i for i in range(101)], ratio_counts_g, s=5)
+    #plt.axhline(0, color='r', linewidth=0.5)
+    #plt.xlabel('G-content [%]')
+    plt.ylabel('Mammoth depth ratio - Elephant depth ratio / \nMammoth depth ratio + Elephant depth ratio')
+    #plt.subplot(3, 1, 3)
+    #plt.scatter([i for i in range(101)], ratio_counts_c, s=5)
+    #plt.axhline(0, color='r', linewidth=0.5)
+    #plt.xlabel('C-content [%]')
     plt.show()
 
 if __name__ == '__main__':
