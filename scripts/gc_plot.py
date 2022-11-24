@@ -45,7 +45,7 @@ def plot_gc():
 
         if mammoth_depth <= 28.7812709:  # Removing outliers (value from (average + 2*std))
             ratio = ((mammoth_depth/mammoth_average)-(elephant_depth/elephant_average))/\
-                    ((mammoth_depth/mammoth_average)+(elephant_depth-elephant_average))
+                    ((mammoth_depth/mammoth_average)+(elephant_depth/elephant_average))
             ratios.append(ratio)
             region = seq[start:stop]
             no_ns = region.replace('N', '')  # Excluding positions with N
