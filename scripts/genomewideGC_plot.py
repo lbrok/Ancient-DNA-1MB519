@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 import os
+import numpy as np
 
 
 def plot_gc():
@@ -9,8 +10,8 @@ def plot_gc():
     # Calculating depth and GC content in specified regions using these dictionaries
     # Dictionaries have keys from 0 to 100
     gc_dict = {i: [0,0] for i in range(101)}
-    g_dict = {i: [0,0] for i in range(101)}
-    c_dict = {i: [0,0] for i in range(101)}
+    # g_dict = {i: [0,0] for i in range(101)}
+    # c_dict = {i: [0,0] for i in range(101)}
 
     # Defining variables
     window_size = 100  # Set window size for sliding window analysis
@@ -61,13 +62,13 @@ def plot_gc():
                                     gc_content = ((region.count('G') + region.count('C')) / len(no_ns))*100   # Calculating GC-content
                                     gc_dict_key = round(gc_content)
 
-                                    g_dict_key = round((region.count('G')/len(no_ns))*100)
-                                    c_dict_key = round((region.count('C')/len(no_ns))*100)
+                                    # g_dict_key = round((region.count('G')/len(no_ns))*100)
+                                    # c_dict_key = round((region.count('C')/len(no_ns))*100)
 
                                     #Updating the averages of different GC%
                                     gc_dict[gc_dict_key] = [gc_dict[gc_dict_key][0]+((ratio-gc_dict[gc_dict_key][0])/(gc_dict[gc_dict_key][1]+1)),(gc_dict[gc_dict_key][1])+1]
-                                    g_dict[g_dict_key] = [g_dict[g_dict_key][0]+((ratio-g_dict[g_dict_key][0])/(g_dict[g_dict_key][1]+1)),g_dict[g_dict_key][1]+1]
-                                    c_dict[c_dict_key] = [c_dict[c_dict_key][0]+((ratio-c_dict[c_dict_key][0])/(c_dict[c_dict_key][1]+1)),c_dict[c_dict_key][1]+1]
+                                    # g_dict[g_dict_key] = [g_dict[g_dict_key][0]+((ratio-g_dict[g_dict_key][0])/(g_dict[g_dict_key][1]+1)),g_dict[g_dict_key][1]+1]
+                                    # c_dict[c_dict_key] = [c_dict[c_dict_key][0]+((ratio-c_dict[c_dict_key][0])/(c_dict[c_dict_key][1]+1)),c_dict[c_dict_key][1]+1]
                     print(f'Chromosome {names[chr_nr]} {round(((telomeres[chr_nr]+idx*chunk_size+start)/len(values[1]))*100,2)}%')
                 data = 0
                 print(f'Chromosome {names[chr_nr]} DONE')
@@ -86,21 +87,36 @@ def plot_gc():
             ratio_counts.append(None)
 
     # Calculating average depth in each G-window
-    ratio_counts_g = []
-    for i in g_dict:
-        if g_dict[i] != [0,0]:
-            ratio_counts_g.append(g_dict[i][0])
-        else:
-            ratio_counts_g.append(None)
-
-    # Calculating average depth in each C-window
-    ratio_counts_c = []
-    for i in c_dict:
-        if c_dict[i] != [0,0]:
-            ratio_counts_c.append(c_dict[i][0])
-        else:
-            ratio_counts_c.append(None)
+    # ratio_counts_g = []
+    # for i in g_dict:
+    #     if g_dict[i] != [0,0]:
+    #         ratio_counts_g.append(g_dict[i][0])
+    #     else:
+    #         ratio_counts_g.append(None)
+    #
+    # # Calculating average depth in each C-window
+    # ratio_counts_c = []
+    # for i in c_dict:
+    #     if c_dict[i] != [0,0]:
+    #         ratio_counts_c.append(c_dict[i][0])
+    #     else:
+    #         ratio_counts_c.append(None)
     f.close()
+
+    # Fit trend line to data
+
+    # Parameters from the fit of the polynomial
+    ratio_counts_no_none = [i for i in ratio_counts if i != None]
+    x = [i for i in range(len(ratio_counts_no_none))]
+    p = np.polyfit(x, ratio_counts_no_none, deg=1)
+
+    # Model the data using the parameters of the fitted straight line
+    y_model = np.polyval(p, x)
+
+    # Mean
+    y_bar = np.mean(ratio_counts_no_none)
+    # Coefficient of determination, R²
+    R2 = np.sum((y_model - y_bar) ** 2) / np.sum((ratio_counts_no_none - y_bar) ** 2)
 
     # Plotting results
     #plt.subplot(3, 1, 2)
@@ -117,6 +133,11 @@ def plot_gc():
     #plt.scatter([i for i in range(101)], ratio_counts_c, s=5)
     #plt.axhline(0, color='r', linewidth=0.5)
     #plt.xlabel('C-content [%]')
+
+    # Line of best fit
+    xlim = plt.xlim()
+    plt.plot(np.array(xlim), p[1] + p[0] * np.array(xlim), label=f'Line of Best Fit, R² = {R2:.2f}', color='black')
+    plt.legend(fontsize=8)
     plt.show()
 
 if __name__ == '__main__':
