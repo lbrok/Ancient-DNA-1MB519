@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 telomeres = [3037418,3037418,0,3037418,3037418,3037418,0,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,0,3037418,3037418,3037418,3037418,3037418,3037418,3037418]
-names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25', 'chr26', 'chr27', 'chrX']
+#names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25', 'chr26', 'chr27', 'chrX']
+names = ['chr24']
 path = 'D:/Data/mammoth.'
 
 '''
@@ -18,7 +19,7 @@ def incrementalStatistics(filePath, names, telomeres):
     s = 0 #Standard deviation
     #meanValue = 33.108845127365235 #Used when removing outliers, this is the previous average
     #stdValue = 10.777236719119456 #Used when removing outliers, this is the previous average
-    for i in range(len(telomeres)):
+    for i in range(len(names)):
         for chunk in pd.read_csv(filePath+names[i]+'.depth', sep='\t', comment='t', header=None, usecols=[2,3,4,5], skiprows=telomeres[i], chunksize=10000000):
             chunk = chunk.mean(axis=1) #Calculates the mean value of each input row
             for index, mammothMean in chunk.items(): #Iterates through each row
