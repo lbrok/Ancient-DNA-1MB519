@@ -112,17 +112,18 @@ def plot_gc():
             ratio_counts = []
             codon_occurrence = []
             for j in codons_dict[i]:
-                ratio_counts.append(j)
-                codon_occurrence.append(codons_dict[i][j])
+                if codons_dict[i][j] != 0:
+                    ratio_counts.append(j)
+                    codon_occurrence.append(codons_dict[i][j])
                 f.write(str(float(j)) + '\t' + str(codons_dict[i][j]) + '\n')
             f.close()
 
         # Fit trend line to data
         # Parameters from the fit of the polynomial
-        p = np.polyfit(codon_counts, ratio_counts, deg=1)
+        p = np.polyfit(codon_occurrence, ratio_counts, deg=1)
 
         # Model the data using the parameters of the fitted straight line
-        y_model = np.polyval(p, codon_counts)
+        y_model = np.polyval(p, codon_occurrence)
 
         # Mean
         y_bar = np.mean(ratio_counts)
@@ -130,9 +131,9 @@ def plot_gc():
         R2 = np.sum((y_model - y_bar) ** 2) / np.sum((ratio_counts - y_bar) ** 2)
 
         # Plotting results
-        plt.scatter(codon_counts, ratio_counts, s=5)
+        plt.scatter(codon_occurrence, ratio_counts, s=5)
         plt.axhline(0, color='r', linewidth=0.5)
-        plt.xlabel('GC-content [%]')
+        plt.xlabel('Occurences of "AAA" codon in window')
         plt.title(f'Window size {window_size} bp')
         plt.ylabel('Mammoth depth ratio - Elephant depth ratio / \nMammoth depth ratio + Elephant depth ratio')
 
@@ -140,7 +141,8 @@ def plot_gc():
         xlim = plt.xlim()
         plt.plot(np.array(xlim), p[1] + p[0] * np.array(xlim), label=f'Line of Best Fit, R² = {R2:.2f}', color='black')
         plt.legend(fontsize=8)
-        plt.errorbar(codon_counts, ratio_counts, yerr=std_counts, fmt='o')
+        plt.errorbar(codon_occurrence, ratio_counts, fmt='o')
+        # yerr=std_counts
         plt.show()
 
 if __name__ == '__main__':
