@@ -1,41 +1,34 @@
 import matplotlib.pyplot as plt
-import pandas as pd
-from Bio.SeqIO.FastaIO import SimpleFastaParser
-from Bio.Seq import Seq
 import os
-import numpy as np
-from window_slider import Slider
+import pandas as pd
+
+codons = ['CGA', 'CGG', 'CGT', 'CGC', 'GCA', 'GCG', 'GCT', 'GCC', 'TCT', 'TCC', 'TTA', 'TTG',
+          'CTA', 'CTG', 'ACA', 'ACG', 'CTT', 'CTC', 'GTT', 'GTC', 'CCA', 'CCG', 'CCT', 'CCC',
+          'GTA', 'GTG', 'TAA', 'TAG', 'TAT', 'AAT', 'AAC', 'GAA', 'GAG', 'TTT', 'TTC', 'TAC',
+          'AAA', 'AAG', 'GAT', 'GAC', 'ATG', 'ATT', 'ACT', 'TGA', 'TGG', 'TGT', 'TGC', 'ACC',
+          'ATA', 'CAA', 'CAG', 'CAT', 'CAC', 'AGA', 'AGG', 'AGT', 'AGC', 'TCA', 'TCG', 'GGA',
+          'GGG', 'GGT', 'GGC', 'ATC']
+
 
 def plot_gc():
+        for codon in codons:
+                data = pd.read_csv(r"C:\Users\46722\Documents\Applied_bioinformatics\Ancient-DNA-1MB519\codon_data/output" + codon + ".txt",
+                                        sep='\t', comment='t', header=None)
+                codon_occurrence = data[1]
+                ratio_counts = data[0]
 
-        codon_occurrence = 
+                # Plotting results
+                plt.scatter(ratio_counts, codon_occurrence, s=5)
+                plt.axhline(0, color='r', linewidth=0.5)
+                plt.xlabel('Mammoth depth ratio - Elephant depth ratio / \nMammoth depth ratio + Elephant depth ratio')
+                plt.title(f'Window size 1000 bp')
+                plt.yscale('log')
+                plt.ylabel(f"Occurrences of codons genome wide")
 
-        # Fit trend line to data
-        # Parameters from the fit of the polynomial
-        p = np.polyfit(codon_occurrence, ratio_counts, deg=1)
+                # Save plot to figure
+                os.chdir('../codon_data')
+                plt.savefig(f"genome_wide_{codon}.png")
 
-        # Model the data using the parameters of the fitted straight line
-        y_model = np.polyval(p, codon_occurrence)
-
-        # Mean
-        y_bar = np.mean(ratio_counts)
-        # Coefficient of determination, R²
-        R2 = np.sum((y_model - y_bar) ** 2) / np.sum((ratio_counts - y_bar) ** 2)
-
-        # Plotting results
-        plt.scatter(codon_occurrence, ratio_counts, s=5)
-        plt.axhline(0, color='r', linewidth=0.5)
-        plt.xlabel('Occurences of "AAA" codon in window')
-        plt.title(f'Window size {window_size} bp')
-        plt.ylabel('Mammoth depth ratio - Elephant depth ratio / \nMammoth depth ratio + Elephant depth ratio')
-
-        # Line of best fit
-        xlim = plt.xlim()
-        plt.plot(np.array(xlim), p[1] + p[0] * np.array(xlim), label=f'Line of Best Fit, R² = {R2:.2f}', color='black')
-        plt.legend(fontsize=8)
-        plt.errorbar(codon_occurrence, ratio_counts, fmt='o')
-        # yerr=std_counts
-        plt.show()
 
 if __name__ == '__main__':
     plot_gc()
