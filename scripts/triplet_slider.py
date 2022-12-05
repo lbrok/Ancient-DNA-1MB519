@@ -22,44 +22,39 @@ def plot_gc():
               'ATA', 'CAA', 'CAG', 'CAT', 'CAC', 'AGA', 'AGG', 'AGT', 'AGC', 'TCA', 'TCG', 'GGA',
               'GGG', 'GGT', 'GGC', 'ATC']
 
-    print(len(codons))
-
     non_codons = ['NNN', 'NNG', 'NNC', 'NNA', 'NNT', 'NGG', 'NGC', 'NGA', 'NGT', 'NCC', 'NCG', 'NCA', 'NCT',
                   'NAA', 'NAG', 'NAC', 'NAT', 'NTT', 'NTG', 'NTC', 'NTA', 'GNN', 'CNN', 'ANN', 'TNN', 'GGN',
                   'GCN', 'GAN', 'GTN', 'CCN', 'CGN', 'CAN', 'CTN', 'AAN', 'AGN', 'ACN', 'ATN', 'TTN', 'TGN',
                   'TCN', 'TAN']
-    print(len(non_codons))
+
     # codons_dict = {i: [0, 0, 0] for i in codons}
     codons_dict = {k: {i: 0 for i in np.around(np.arange(-1, 1, 0.001), 2)} for k in codons}
     # mOld_dict = {i: 0 for i in codons}
 
     # Defining variables
     window_size = 1000  # Set window size for sliding window analysis
-    mammoth_average = 13.64328801191864  # Pooled mammoth genome average
-    elephant_average = 33.158036502652195  # Pooled elephant genome average
-    chunk_size = 1000000  # Size of data batches being read, in rows at a time
+    mammoth_average = 13.336119102787015  # Pooled mammoth genome average
+    elephant_average = 33.10835482336245  # Pooled elephant genome average
+    chunk_size = 2000000  # Size of data batches being read, in rows at a time
     names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13',
              'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25',
              'chr26', 'chr27', 'chrX']
     telomeres = [3000000, 3000000, 0, 3000000, 3000000, 3000000, 0, 3000000, 3000000, 3000000, 3000000, 3000000,
-                 3000000,
-                 3000000,
-                 300000, 3000000, 3000000, 3000000, 3000000, 3000000, 0, 3000000,
-                 3000000, 3000000, 3000000, 3000000, 3000000, 3000000]
+                 3000000, 3000000, 300000, 3000000, 3000000, 3000000, 3000000, 3000000, 0, 3000000, 3000000,
+                 3000000, 3000000, 3000000, 3000000, 3000000]
 
     bucket_size = 3
     overlap_count = 1
 
     with open(
-            r"C:\Users\miche\PycharmProjects\datachromo\Data\LoxAfr4_DQ188829.fa") as handle:
+            r'C:\Users\46722\Documents\Applied_bioinformatics\Ancient-DNA-1MB519\data\Loxodonta-Africana_reference.fa') as handle:
         for values in SimpleFastaParser(
-                handle):  # Loads the Fasta header and the corresponding sequence in a list [header,sequence]
-            if values[
-                0] in names:  # If the fasta header is present in the names list it should be included in the # calculations
+                handle):  # Loads the fasta header and the corresponding sequence in a list [header,sequence]
+            if values[0] in names:  # If the fasta header is present in the names list it should be included in the # calculations
                 chr_nr = names.index(values[0])  # Getting the index of the fasta header in the names list
                 for idx, data in enumerate(pd.read_csv(
-                        r"C:\Users\miche\PycharmProjects\datachromo\Data\mammoth." + names[
-                            chr_nr] + ".depth", sep='\t',
+                        r'C:\Users\46722\Documents\Applied_bioinformatics\Ancient-DNA-1MB519\data\mammoth.' + names[
+                            chr_nr] + ".depth.gz", sep='\t',
                         comment='t', header=None,
                         usecols=[2, 3, 4, 5, 6, 7, 8, 9], chunksize=chunk_size,
                         skiprows=telomeres[chr_nr])):
@@ -86,15 +81,14 @@ def plot_gc():
                         elephant_depth = data['average_elephant'].iloc[start:stop].mean()
                         slider = Slider(bucket_size, overlap_count)
 
-                        if mammoth_depth <= 28.7812709234281:  # Removing outliers (value from (average + 2*std)) 13.655611525936575+2*7.5628296987457775
+                        if mammoth_depth <= 28.809742623753436:  # Removing outliers (value from (average + 2*std)) 13.655611525936575+2*7.5628296987457775
                             if mammoth_depth != 0 or elephant_depth != 0:
                                 ratio = ((mammoth_depth / mammoth_average) - (elephant_depth / elephant_average)) / \
                                         ((mammoth_depth / mammoth_average) + (elephant_depth / elephant_average))
                                 ratio = round(ratio, 2)
 
                                 slider.fit(
-                                    np.array(list(values[1][telomeres[chr_nr] + idx * chunk_size + start:telomeres[
-                                                                                                             chr_nr] + idx * chunk_size + stop])))
+                                    np.array(list(values[1][telomeres[chr_nr] + idx * chunk_size + start:telomeres[chr_nr] + idx * chunk_size + stop])))
                                 new_slide = True
                                 if ratio > 1:
                                     print(f'Positions: {[start, stop]} Ratio: {ratio}]')
@@ -132,51 +126,6 @@ def plot_gc():
             # occurrence.append(codon_occurrence)
             # print(occurence)
             f.close()
-
-        # # Fit trend line to data
-        # # Parameters from the fit of the polynomial of the codon
-        # p1 = np.polyfit(occurrence[0], ratio[0], deg=1)
-        #
-        # # Fit trend line to data
-        # # Parameters from the fit of the polynomial of the reverse-complement codon
-        # p2 = np.polyfit(occurrence[1], ratio[1], deg=1)
-        #
-        # # Model the data using the parameters of the fitted straight line of the codon
-        # y_model_1 = np.polyval(p1, occurrence[0])
-        #
-        # # Model the data using the parameters of the fitted straight line of the reverse-complement codon
-        # y_model_2 = np.polyval(p2, occurrence[1])
-        #
-        # # Mean codon
-        # y_bar_1 = np.mean(ratio[0])
-        # # Mean reverse codon
-        # y_bar_2 = np.mean(ratio[1])
-        # # Coefficient of determination, R²
-        # R2_1 = np.sum((y_model_1 - y_bar_1) ** 2) / np.sum((ratio[0] - y_bar_1) ** 2)
-        # # Coefficient of determination, R²
-        # R2_2 = np.sum((y_model_2 - y_bar_2) ** 2) / np.sum((ratio_counts[1] - y_bar_2) ** 2)
-        #
-        # # Plotting results
-        # plt.scatter(occurrence[0], ratio[0], s=5, color='blue')
-        # plt.axhline(0, color='r', linewidth=0.5)
-        # plt.xlabel('Occurences of "CGG" codon in window')
-        # plt.title(f'Window size {window_size} bp')
-        # plt.ylabel('Mammoth depth ratio - Elephant depth ratio / \nMammoth depth ratio + Elephant depth ratio')
-        #
-        # # Line of best fit
-        # xlim = plt.xlim()
-        # plt.plot(np.array(xlim), p1[1] + p1[0] * np.array(xlim), label=f'Line of Best Fit, R² = {R2_1:.2f}', color='black')
-        #
-        # # Plotting results
-        # plt.scatter(occurrence[1], ratio[1], s=5, color='orange')
-        #
-        #
-        # # Line of best fit
-        # xlim = plt.xlim()
-        # plt.plot(np.array(xlim), p2[1] + p2[0] * np.array(xlim), label=f'Line of Best Fit, R² = {R2_2:.2f}',
-        #          color='black')
-        # plt.legend(fontsize=8)
-        # plt.show()
 
 
 if __name__ == '__main__':
