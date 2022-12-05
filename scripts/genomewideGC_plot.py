@@ -15,11 +15,11 @@ def plot_gc():
     mOld_dict = {i: 0 for i in range(101)}
 
     # Defining variables
-    window_size = 1000  # Set window size for sliding window analysis
+    window_size = 10000  # Set window size for sliding window analysis
     mammoth_average = 13.34943063462263     # Pooled mammoth genome average
     elephant_average = 33.001500559085684   # Pooled elephant genome average
     chunk_size = 1200000 #Size of data batches being read, in rows at a time
-    telomeres = [3037418,3037418,0,3037418,3037418,3037418,0,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,3037418,0,3037418,3037418,3037418,3037418,3037418,3037418,3037418]
+    telomeres = [3000000,3000000,0,3000000,3000000,3000000,0,3000000,3000000,3000000,3000000,3000000,3000000,3000000,300000,3000000,3000000,3000000,3000000,3000000,0,3000000,3000000,3000000,3000000,3000000,3000000,3000000]
     names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25', 'chr26', 'chr27', 'chrX']
 
     with open("D:/Data/LoxAfr4_DQ188829.fa", encoding="ascii") as handle:
@@ -86,7 +86,7 @@ def plot_gc():
             GC_counts.append(i)
             gc_dict[i][1] = (gc_dict[i][1]/(gc_dict[i][2]-1))**(0.5) #Final std calc
             ratio_counts.append(gc_dict[i][0])
-            std_counts.append(gc_dict[i][1]*2) #2std for a 95% confidence interval
+            std_counts.append(gc_dict[i][1]*2) #2stds for a 95% confidence interval
         f.write(str(round(float(gc_dict[i][0]),3))+'\t'+str(round(float(gc_dict[i][1]),3))+'\t'+str(int(gc_dict[i][2]))+'\n')
     f.close()
 

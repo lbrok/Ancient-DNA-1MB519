@@ -1,20 +1,20 @@
+from Bio.SeqIO.FastaIO import SimpleFastaParser
+
 def find_telomere():
     # Reading fasta file to string
-    fasta_file = open(r"C:/Users/46722/Documents/Tillämpad_bioinformatik/Ancient-DNA-1MB519/chrX.fa", "r")
-    seq = fasta_file.read()
-    fasta_file.close()
+    with open("D:/Data/LoxAfr4_DQ188829.fa", encoding="ascii") as handle:
+        for seq in SimpleFastaParser(handle):
 
-    # Removing first line of fasta sequence (identifier)
-    seq = seq.split('\n',2)[-1]
-
-    # Finding first position that is not N
-    A_pos = seq.find('A')
-    G_pos = seq.find('G')
-    C_pos = seq.find('C')
-    T_pos = seq.find('T')
-    first_pos = min(A_pos, G_pos, C_pos, T_pos)
-    return first_pos
+            # Finding first position that is not N
+            A_pos = seq[1].find('A')
+            G_pos = seq[1].find('G')
+            C_pos = seq[1].find('C')
+            T_pos = seq[1].find('T')
+            first_pos = min(A_pos, G_pos, C_pos, T_pos)
+            print(f"The last chromosome position of the telomere in {seq[0]} is: {first_pos} bp")
+            #return [seq[0],first_pos]
 
 if __name__ == '__main__':
-    print(f"The last chromosome position of the telomere is: {find_telomere()-1} bp")
+    result = find_telomere()
+    #print(f"The last chromosome position of the telomere in {result[0]} is: {result[1]-1} bp")
 

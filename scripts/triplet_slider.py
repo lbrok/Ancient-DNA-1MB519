@@ -35,27 +35,31 @@ def plot_gc():
 
     # Defining variables
     window_size = 1000  # Set window size for sliding window analysis
-    mammoth_average = 13.336119102787015  # Pooled mammoth genome average
-    elephant_average = 33.10835482336245  # Pooled elephant genome average
-    chunk_size = 2000000  # Size of data batches being read, in rows at a time
+    mammoth_average = 13.64328801191864  # Pooled mammoth genome average
+    elephant_average = 33.158036502652195  # Pooled elephant genome average
+    chunk_size = 1000000  # Size of data batches being read, in rows at a time
     names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13',
              'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25',
              'chr26', 'chr27', 'chrX']
     telomeres = [3000000, 3000000, 0, 3000000, 3000000, 3000000, 0, 3000000, 3000000, 3000000, 3000000, 3000000,
-                 3000000, 3000000, 300000, 3000000, 3000000, 3000000, 3000000, 3000000, 0, 3000000, 3000000,
-                 3000000, 3000000, 3000000, 3000000, 3000000]
+                 3000000,
+                 3000000,
+                 300000, 3000000, 3000000, 3000000, 3000000, 3000000, 0, 3000000,
+                 3000000, 3000000, 3000000, 3000000, 3000000, 3000000]
 
     bucket_size = 3
     overlap_count = 1
 
     with open(
-            r"C:/Users/46722/Documents/Applied_bioinformatics/Ancient-DNA-1MB519/data/Loxodonta-Africana_reference.fa") as handle:
-        for values in SimpleFastaParser(handle):  # Loads the Fasta header and the corresponding sequence in a list [header,sequence]
-            if values[0] in names:  # If the fasta header is present in the names list it should be included in the # calculations
+            r"C:\Users\miche\PycharmProjects\datachromo\Data\LoxAfr4_DQ188829.fa") as handle:
+        for values in SimpleFastaParser(
+                handle):  # Loads the Fasta header and the corresponding sequence in a list [header,sequence]
+            if values[
+                0] in names:  # If the fasta header is present in the names list it should be included in the # calculations
                 chr_nr = names.index(values[0])  # Getting the index of the fasta header in the names list
                 for idx, data in enumerate(pd.read_csv(
-                        r"C:/Users/46722/Documents/Applied_bioinformatics/Ancient-DNA-1MB519/data/mammoth." + names[
-                            chr_nr] + ".depth.gz", sep='\t',
+                        r"C:\Users\miche\PycharmProjects\datachromo\Data\mammoth." + names[
+                            chr_nr] + ".depth", sep='\t',
                         comment='t', header=None,
                         usecols=[2, 3, 4, 5, 6, 7, 8, 9], chunksize=chunk_size,
                         skiprows=telomeres[chr_nr])):
@@ -82,7 +86,7 @@ def plot_gc():
                         elephant_depth = data['average_elephant'].iloc[start:stop].mean()
                         slider = Slider(bucket_size, overlap_count)
 
-                        if mammoth_depth <= 28.809742623753436:  # Removing outliers (value from (average + 2*std)) 13.655611525936575+2*7.5628296987457775
+                        if mammoth_depth <= 28.7812709234281:  # Removing outliers (value from (average + 2*std)) 13.655611525936575+2*7.5628296987457775
                             if mammoth_depth != 0 or elephant_depth != 0:
                                 ratio = ((mammoth_depth / mammoth_average) - (elephant_depth / elephant_average)) / \
                                         ((mammoth_depth / mammoth_average) + (elephant_depth / elephant_average))
@@ -177,4 +181,3 @@ def plot_gc():
 
 if __name__ == '__main__':
     plot_gc()
-
