@@ -64,6 +64,7 @@ removedOutliers = sum(data.loc[data['Outlier'], 'NumOfWindows'].tolist())
 totalWindows = data['NumOfWindows'].sum()
 removedOutliersFraction = 100*(removedOutliers/totalWindows)
 
+
 plt.subplot(2,1,1)
 plt.bar(data['GC%'], data['NumOfWindows'],color=plot_color, label='Included GC%')
 plt.bar(data['GC%'].where(data['Outlier']),data['NumOfWindows'],color='white', edgecolor='grey', label='Excluded GC%')
@@ -77,6 +78,7 @@ plt.title(f'{sample}, window size {window_size} bp')
 plt.xlim([-5,105])
 plt.legend(fontsize=8)
 plt.yscale('log')
+
 
 plt.subplot(2,1,2)
 plt.errorbar(data['GC%'].where(data['Outlier'] == False),data['Mean'], yerr=data['Std'],color=plot_color, ecolor=plot_color, fmt='o',zorder=1)
