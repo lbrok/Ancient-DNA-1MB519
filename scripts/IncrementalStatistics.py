@@ -8,7 +8,6 @@ telomeres = [10000,10000,60000,10000,10000,60000,10000,10000,10000,60000,60000,6
 #names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chr23', 'chr24', 'chr25', 'chr26', 'chr27', 'chrX']
 names = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22']
 
-
 path = 'D:/Data/Neanderthal/neanderthal-human.'
 
 '''
@@ -25,8 +24,8 @@ def incrementalStatistics(filePath, names, telomeres):
     m = 0 #Mean value
     sq_sum = 0 #Square sum
 
-    #meanValue = 13.64328801191864 #Used when removing outliers, this is the previous average
-    #stdValue = 7.583227305917397 #Used when removing outliers, this is the previous average
+    meanValue = 55.486431521768495 #Used when removing outliers, this is the previous average
+    stdValue = 80.14920140853054 #Used when removing outliers, this is the previous average
     for i in range(len(names)):
         if telomeres[i] > chunk_size:
             telomeres[i] -= chunk_size
@@ -35,10 +34,13 @@ def incrementalStatistics(filePath, names, telomeres):
             if first == False:
                 chunk = chunk.mean(axis=1) #Calculates the mean value of each input row
                 for index, mammothMean in chunk.items(): #Iterates through each row
-                    #if mammothMean < meanValue + 2*stdValue: #Add / remove if statement if outliers should be removed or not
-                    n += 1 #Adds one nucleotide in the counter
-                    m = m + ((mammothMean-m)/n) #Calculates an incremental mean value
-                    sq_sum += mammothMean * mammothMean
+                    if not mammothMean >= 0: #Filters away the 63 nan that are present in human chr 17 depth data
+                        mammothMean = 0
+                    if mammothMean < meanValue + 2*stdValue: #Add / remove if statement if outliers should be removed or not
+                        n += 1 #Adds one nucleotide in the counter
+                        m = m + ((mammothMean-m)/n) #Calculates an incremental mean value
+                        sq_sum += mammothMean * mammothMean
+                    
             else:
                 first = False
         print(f'Chromosome {i+1} of {len(telomeres)}')
