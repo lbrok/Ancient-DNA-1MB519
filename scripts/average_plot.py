@@ -8,6 +8,7 @@ codons = ['CGA', 'CGG', 'CGT', 'CGC', 'GCA', 'GCG', 'GCT', 'GCC', 'TCT', 'TCC', 
           'AAA', 'AAG', 'GAT', 'GAC', 'ATG', 'ATT', 'ACT', 'TGA', 'TGG', 'TGT', 'TGC', 'ACC',
           'ATA', 'CAA', 'CAG', 'CAT', 'CAC', 'AGA', 'AGG', 'AGT', 'AGC', 'TCA', 'TCG', 'GGA',
           'GGG', 'GGT', 'GGC', 'ATC']
+codons.sort()
 
 
 def average_plot():
@@ -30,15 +31,16 @@ def average_plot():
 
     # Plotting results
     plt.subplot(2, 1, 1)
-    plt.bar(codons, occurrences)
+    plt.bar(codons, occurrences, color='#1f7864')
     plt.xticks(rotation=90)
-    plt.title(f"Window size 1000 bp")
-    plt.ylabel(f"Number of occurrences of trinucleotide genome wide")
+    plt.title(f"Window size 1000 bp", pad=20)
+    plt.ylabel(f"Number of occurrences of trinucleotide genome wide", fontsize=8, labelpad=20)
     plt.subplot(2, 1, 2)
-    plt.errorbar(codons, average_ratios, stdev_ratios, linestyle='None', marker='o')
+    plt.scatter(codons, average_ratios, linestyle='None', s=10, marker='o', color='#1f7864')
+    plt.errorbar(codons, average_ratios, stdev_ratios, linestyle='None', fmt='', color='#1f7864')
     plt.xticks(rotation=90)
     plt.grid(axis='x', color='whitesmoke')
-    plt.ylabel(f"Average depth ratio values for trinucleotide genome wide")
+    plt.ylabel(f"Average depth ratio values for trinucleotide genome wide", fontsize=8, labelpad=5)
     plt.show()
 
 
